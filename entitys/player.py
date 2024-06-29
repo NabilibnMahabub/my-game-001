@@ -17,6 +17,8 @@ def draw_bg(screen):
 class Player(pygame.sprite.Sprite):
     def __init__(self ,char_type ,x ,y ,scale, speed, jump ,ammo):
         pygame.sprite.Sprite.__init__(self)
+        self.x =x
+        self.y =y
         self.alive = True
         self.health = 100
         self.start_health = self.health
@@ -31,6 +33,7 @@ class Player(pygame.sprite.Sprite):
         self.in_air = True
         self.direction = 1
         self.flip = False
+        self.hitbox_ =False
         self.animation_list = [ ]
         self.frame_index = 0
         self.action = 0
@@ -108,6 +111,12 @@ class Player(pygame.sprite.Sprite):
         #update rect
         self.rect.x += dx
         self.rect.y += dy
+    def controll(self , hitbox):
+        if hitbox:
+            self.hitbox_=True
+        else:
+            self.hitbox_=False
+
     
     def update_animation(self):
         #update animation
@@ -140,14 +149,16 @@ class Player(pygame.sprite.Sprite):
 
 
     def draw(self,screen):
-        #screen.blit(self.image,(0,0))
         flipped_image = pygame.transform.flip(self.image, self.flip ,False)
         flipped_image.set_colorkey(BLACK)
         screen.blit(flipped_image, self.rect)
-        #pygame.draw.rect(screen,WHITE,self.hitbox,2)
-        #pygame.draw.rect(screen,WHITE,self.rect,2)
-
         self.hitbox.center = self.rect.center
+
+        if self.hitbox_:
+            pygame.draw.rect(screen,WHITE,self.hitbox,2)
+            pygame.draw.rect(screen,WHITE,self.rect,2)
+
+        
 
 
 

@@ -18,6 +18,7 @@ moving_L = False
 moving_R = False
 jump = False
 shoot = False
+hitbox = False
 
 
 player = Player('blue',300,300,2,5,11,600)
@@ -27,6 +28,8 @@ corsor = pygame.image.load('assets/corsor/corsor.png').convert_alpha()
 corsor = pygame.transform.scale(corsor,(5*2,5*2))
 
 health_bar = Healthbar(5,5,100,10,100)
+ammo_bar = AmmoBar(5,20, 16.8,10,100)
+
 
 #runner
 run = True
@@ -36,12 +39,15 @@ while run:
     clock.tick(FPS)
     draw_bg(screen)
 
-    health_bar.hp = 50
-    health_bar.draw(screen)
+    ammo_bar.draw(screen,player.ammo)
+    health_bar.draw(screen,player.health)
 
+    player.controll(hitbox)
     player.update()
     player.draw(screen)
-    
+    player.move(moving_L,moving_R)
+
+    enemy.controll(hitbox)
     enemy.update()
     enemy.draw(screen)
     
@@ -59,7 +65,7 @@ while run:
         else:
             player.update_action(0)#0 = idle
     
-    player.move(moving_L,moving_R)
+    
     
     for event in pygame.event.get():
         #quit game
@@ -81,6 +87,12 @@ while run:
                 player.jump = True
             if event.key == pygame.K_ESCAPE:
                 run = False
+            if event.key == pygame.K_b:
+                if hitbox:
+                    hitbox=False
+                else:
+                    hitbox=True
+            
     
         #on relise
         if event.type == pygame.KEYUP:

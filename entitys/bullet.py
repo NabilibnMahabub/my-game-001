@@ -37,8 +37,7 @@ class Bullet(pygame.sprite.Sprite):
         # Check collision with enemy
         if pygame.sprite.spritecollide(self.enemy,bullet_group,False):
             if self.enemy.alive:
-                self.enemy.health -= 25
-                print(self.enemy.health)
+                self.enemy.health -= 5
                 self.kill()
         
         
