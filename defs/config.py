@@ -8,5 +8,4 @@ screen_h = 600
 
 clock = pygame.time.Clock()
 FPS = 60
-
 GRAVITY = .8
