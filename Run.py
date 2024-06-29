@@ -5,6 +5,7 @@ pygame.init()
 
 #defs
 from defs.config import *
+from defs.screen_obj import *
 from entitys.player import *
 from entitys.bullet import *
 
@@ -23,7 +24,9 @@ player = Player('blue',300,300,2,5,11,600)
 enemy = Player('red',500,300,2,5,11,600)
 
 corsor = pygame.image.load('assets/corsor/corsor.png').convert_alpha()
+corsor = pygame.transform.scale(corsor,(5*2,5*2))
 
+health_bar = Healthbar(5,5,100,10,100)
 
 #runner
 run = True
@@ -33,10 +36,13 @@ while run:
     clock.tick(FPS)
     draw_bg(screen)
 
+    health_bar.hp = 50
+    health_bar.draw(screen)
+
     player.update()
     player.draw(screen)
     
-    enemy.update_animation()
+    enemy.update()
     enemy.draw(screen)
     
     #bullet group
@@ -45,7 +51,7 @@ while run:
     
     if player.alive:
         if shoot:
-            player.shoot()
+            player.shoot(player,enemy)
         if player.in_air == True:
             player.update_action(2)#2 = jump
         elif moving_L or moving_R:

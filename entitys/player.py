@@ -36,18 +36,20 @@ class Player(pygame.sprite.Sprite):
         self.action = 0
         self.update_time = pygame.time.get_ticks()
 
-        self.animation_types = ['idle','run','jump']
+        self.animation_types = ['idle','run','jump','death']
         for animation in self.animation_types:
             temp_list = []
 
             num = len(os.listdir(f'assets/player/count/{animation}'))
             img = pygame.image.load(f'assets/player/{self.char_type}/{animation}.png').convert_alpha()
             sheet = spritesheet(img)
-
             for i in range(num):
-                image = sheet.get_image(i,28,34,BLACK)
-                image = pygame.transform.scale(image,(int(image.get_width()*self.scale),int(image.get_height()*self.scale)))
-                temp_list.append(image)
+                if animation == 'death':
+                    image = sheet.get_image(i,29,34,self.scale,BLACK)
+                    temp_list.append(image)
+                else:
+                    image = sheet.get_image(i,28,34,self.scale,BLACK)
+                    temp_list.append(image)
             self.animation_list.append(temp_list)
         
         self.image = self.animation_list[self.action][self.frame_index]
@@ -59,14 +61,15 @@ class Player(pygame.sprite.Sprite):
     
     def update(self):
         self.update_animation()
+        self.check_alive()
         #bullet cooldown
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 0.1
 
-    def shoot(self):
+    def shoot(self,player,enemy):
         if self.shoot_cooldown == 0 and self.ammo > 0:
             self.shoot_cooldown = 0.2
-            bullet = Bullet(self.rect.centerx+(self.hitbox.size[0]*self.direction),self.rect.centery,self.direction)
+            bullet = Bullet(self.rect.centerx+(self.hitbox.size[0]*self.direction),self.rect.centery,self.direction,player,enemy)
             bullet_group.add(bullet)
             self.ammo -= 1
 
@@ -117,17 +120,32 @@ class Player(pygame.sprite.Sprite):
             self.frame_index += 1
         #looping the images
         if self.frame_index == len(self.animation_list[self.action]):
-            self.frame_index = 0
+            if self.action == 3:
+                self.frame_index = len(self.animation_list[self.action]) - 1
+            else:
+                self.frame_index = 0
     
     def update_action(self, new_action):
         if new_action != self.action:
             self.frame_index = 0
             self.action = new_action
 
+    def check_alive(self):
+        if self.health <= 0:
+            self.health = 0
+            self.alive = False
+            self.update_action(3)# 3 = death
+            if self.health ==0:
+                self.kill()
+
+
     def draw(self,screen):
-        screen.blit(pygame.transform.flip(self.image, self.flip ,False) , self.rect)
-        pygame.draw.rect(screen,WHITE,self.hitbox,2)
-        pygame.draw.rect(screen,WHITE,self.rect,2)
+        #screen.blit(self.image,(0,0))
+        flipped_image = pygame.transform.flip(self.image, self.flip ,False)
+        flipped_image.set_colorkey(BLACK)
+        screen.blit(flipped_image, self.rect)
+        #pygame.draw.rect(screen,WHITE,self.hitbox,2)
+        #pygame.draw.rect(screen,WHITE,self.rect,2)
 
         self.hitbox.center = self.rect.center
 
