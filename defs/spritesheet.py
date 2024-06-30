@@ -9,3 +9,4 @@ class spritesheet():
         image = pygame.transform.scale(image ,(width *scale,hight*scale))
         image.set_colorkey(color)
         return image
+    

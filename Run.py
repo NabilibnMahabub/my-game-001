@@ -8,6 +8,8 @@ from defs.config import *
 from defs.screen_obj import *
 from entitys.player import *
 from entitys.bullet import *
+from entitys.grenade import *
+
 
 
 screen = pygame.display.set_mode((screen_w ,screen_h))
@@ -17,12 +19,15 @@ pygame.mouse.set_visible(False)
 moving_L = False
 moving_R = False
 jump = False
+sneek = False
 shoot = False
+grenade = False
 hitbox = False
 
 
-player = Player('blue',300,300,2,5,11,600)
-enemy = Player('red',500,300,2,5,11,600)
+
+player = Player('blue',300,300,2,5,11,600,10)
+enemy = Player('red',500,300,2,5,11,600,0)
 
 corsor = pygame.image.load('assets/corsor/corsor.png').convert_alpha()
 corsor = pygame.transform.scale(corsor,(5*2,5*2))
@@ -45,12 +50,15 @@ while run:
     player.controll(hitbox)
     player.update()
     player.draw(screen)
-    player.move(moving_L,moving_R)
+    player.move(moving_L,moving_R,sneek)
 
     enemy.controll(hitbox)
     enemy.update()
     enemy.draw(screen)
     
+    grenade_group.update()
+    grenade_group.draw(screen)
+
     #bullet group
     bullet_group.update()
     bullet_group.draw(screen)
@@ -58,7 +66,11 @@ while run:
     if player.alive:
         if shoot:
             player.shoot(player,enemy)
-        if player.in_air == True:
+        elif grenade:
+            player.grenade(player,enemy)
+        if sneek:
+            player.update_action(3)# 3 = sneek
+        elif player.in_air == True:
             player.update_action(2)#2 = jump
         elif moving_L or moving_R:
             player.update_action(1)#1 = run
@@ -85,21 +97,30 @@ while run:
                 moving_R = True
             if event.key == pygame.K_SPACE and player.alive:
                 player.jump = True
+            if event.key == pygame.K_LSHIFT:
+                sneek = True
             if event.key == pygame.K_ESCAPE:
                 run = False
+            if event.key == pygame.K_g:
+                grenade = True
             if event.key == pygame.K_b:
                 if hitbox:
                     hitbox=False
                 else:
                     hitbox=True
-            
-    
         #on relise
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 moving_L = False
             if event.key == pygame.K_d:
                 moving_R = False
+            if event.key == pygame.K_SPACE and player.alive:
+                player.jump = False
+            if event.key == pygame.K_LSHIFT:
+                sneek = False
+            if event.key == pygame.K_g:
+                grenade = False
+
     screen.blit(corsor,pos)
     
     pygame.display.update()

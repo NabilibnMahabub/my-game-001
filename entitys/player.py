@@ -4,6 +4,8 @@ import os
 from defs.config import *
 from defs.spritesheet import *
 from entitys.bullet import *
+from entitys.grenade import *
+
 
 BG = (144,201,120)
 RED = (255 ,0,0)
@@ -15,7 +17,7 @@ def draw_bg(screen):
     pygame.draw.line(screen, RED ,(0, 400),(screen_w,400))
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self ,char_type ,x ,y ,scale, speed, jump ,ammo):
+    def __init__(self ,char_type ,x ,y ,scale, speed, jump ,ammo,grenades):
         pygame.sprite.Sprite.__init__(self)
         self.x =x
         self.y =y
@@ -26,8 +28,11 @@ class Player(pygame.sprite.Sprite):
         self.char_type = char_type
         self.speed = speed
         self.shoot_cooldown = 0
+        self.grenade_cooldown = 0
         self.ammo = ammo
         self.start_ammo = ammo
+        self.grenades = grenades
+        self.max_g = self.grenades
         self.jump = jump
         self.val_y = 0
         self.in_air = True
@@ -39,7 +44,7 @@ class Player(pygame.sprite.Sprite):
         self.action = 0
         self.update_time = pygame.time.get_ticks()
 
-        self.animation_types = ['idle','run','jump','death']
+        self.animation_types = ['idle','run','jump','crouch','death']
         for animation in self.animation_types:
             temp_list = []
 
@@ -67,17 +72,28 @@ class Player(pygame.sprite.Sprite):
         self.check_alive()
         #bullet cooldown
         if self.shoot_cooldown > 0:
-            self.shoot_cooldown -= 0.1
+            self.shoot_cooldown -= 1
+
+        #grenade coollldown
+        if self.grenade_cooldown > 0:
+            self.grenade_cooldown -= 1
 
     def shoot(self,player,enemy):
         if self.shoot_cooldown == 0 and self.ammo > 0:
-            self.shoot_cooldown = 0.2
+            self.shoot_cooldown = 6
             bullet = Bullet(self.rect.centerx+(self.hitbox.size[0]*self.direction),self.rect.centery,self.direction,player,enemy)
             bullet_group.add(bullet)
             self.ammo -= 1
+        
+    def grenade(self,player,enemy):
+        if self.grenade_cooldown == 0 and self.grenades > 0:
+            self.grenade_cooldown = 40
+            grenade = Grenade(self.rect.centerx+(0.1*self.hitbox.size[0]*self.direction),self.rect.centery+1,self.direction,player,enemy)
+            grenade_group.add(grenade)
+            self.grenades -= 1
 
 
-    def move(self , moving_L,moving_R):
+    def move(self , moving_L,moving_R,sneek):
         #delta x and y velue
         dx = 0
         dy = 0
@@ -95,7 +111,7 @@ class Player(pygame.sprite.Sprite):
             self.val_y = -11
             self.jump = False
             self.in_air = True
-        
+
         #gravity
         self.val_y += GRAVITY
         if self.val_y > 10:
@@ -129,7 +145,7 @@ class Player(pygame.sprite.Sprite):
             self.frame_index += 1
         #looping the images
         if self.frame_index == len(self.animation_list[self.action]):
-            if self.action == 3:
+            if self.action == 4 or self.action == 3:
                 self.frame_index = len(self.animation_list[self.action]) - 1
             else:
                 self.frame_index = 0
@@ -138,12 +154,12 @@ class Player(pygame.sprite.Sprite):
         if new_action != self.action:
             self.frame_index = 0
             self.action = new_action
-
+        
     def check_alive(self):
         if self.health <= 0:
             self.health = 0
             self.alive = False
-            self.update_action(3)# 3 = death
+            self.update_action(4)# 4 = death
             if self.health ==0:
                 self.kill()
 
