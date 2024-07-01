@@ -2,6 +2,7 @@ import pygame
 from defs.config import *
 from entitys.player import *
 
+enemy_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 
 class Bullet(pygame.sprite.Sprite):
@@ -33,12 +34,12 @@ class Bullet(pygame.sprite.Sprite):
             if self.player.alive:
                 self.player.health -= 5
                 self.kill()
-        
-        # Check collision with enemy
-        if pygame.sprite.spritecollide(self.enemy,bullet_group,False):
-            if self.enemy.alive:
-                self.enemy.health -= 5
-                self.kill()
+        for enemy in enemy_group:
+            # Check collision with enemy
+            if pygame.sprite.spritecollide(self.enemy,bullet_group,False):
+                if self.enemy.alive:
+                    self.enemy.health -= 5
+                    self.kill()
         
         
 

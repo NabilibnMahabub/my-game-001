@@ -28,6 +28,7 @@ hitbox = False
 
 player = Player('blue',300,300,2,5,11,600,10)
 enemy = Player('red',500,300,2,5,11,600,0)
+enemy_group.add(enemy)
 
 corsor = pygame.image.load('assets/corsor/corsor.png').convert_alpha()
 corsor = pygame.transform.scale(corsor,(5*2,5*2))
@@ -52,12 +53,14 @@ while run:
     player.draw(screen)
     player.move(moving_L,moving_R,sneek)
 
-    enemy.controll(hitbox)
-    enemy.update()
-    enemy.draw(screen)
+    enemy_group.update()
+    enemy_group.draw(screen)
     
     grenade_group.update()
     grenade_group.draw(screen)
+
+    explosion_group.update()
+    explosion_group.draw(screen)
 
     #bullet group
     bullet_group.update()

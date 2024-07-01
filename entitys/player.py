@@ -7,6 +7,8 @@ from entitys.bullet import *
 from entitys.grenade import *
 
 
+enemy_group = pygame.sprite.Group()
+
 BG = (144,201,120)
 RED = (255 ,0,0)
 WHITE = (255,255,255)
