@@ -6,9 +6,6 @@ from defs.spritesheet import *
 from entitys.bullet import *
 from entitys.grenade import *
 
-
-enemy_group = pygame.sprite.Group()
-
 BG = (144,201,120)
 RED = (255 ,0,0)
 WHITE = (255,255,255)
@@ -80,17 +77,17 @@ class Player(pygame.sprite.Sprite):
         if self.grenade_cooldown > 0:
             self.grenade_cooldown -= 1
 
-    def shoot(self,player,enemy):
+    def shoot(self,player):
         if self.shoot_cooldown == 0 and self.ammo > 0:
             self.shoot_cooldown = 6
-            bullet = Bullet(self.rect.centerx+(self.hitbox.size[0]*self.direction),self.rect.centery,self.direction,player,enemy)
+            bullet = Bullet(self.rect.centerx+(self.hitbox.size[0]*self.direction),self.rect.centery,self.direction,player)
             bullet_group.add(bullet)
             self.ammo -= 1
         
-    def grenade(self,player,enemy):
+    def grenade(self,player):
         if self.grenade_cooldown == 0 and self.grenades > 0:
             self.grenade_cooldown = 40
-            grenade = Grenade(self.rect.centerx+(0.1*self.hitbox.size[0]*self.direction),self.rect.centery+1,self.direction,player,enemy)
+            grenade = Grenade(self.rect.centerx+(0.1*self.hitbox.size[0]*self.direction),self.rect.centery+1,self.direction,player)
             grenade_group.add(grenade)
             self.grenades -= 1
 

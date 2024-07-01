@@ -28,7 +28,17 @@ hitbox = False
 
 player = Player('blue',300,300,2,5,11,600,10)
 enemy = Player('red',500,300,2,5,11,600,0)
+enemy2 = Player('black',600,300,2,5,11,600,0)
+enemy3 = Player('yellow',400,300,2,5,11,600,0)
+enemy4 = Player('green',200,300,2,5,11,600,0)
+
+
 enemy_group.add(enemy)
+enemy_group.add(enemy2)
+enemy_group.add(enemy3)
+enemy_group.add(enemy4)
+
+
 
 corsor = pygame.image.load('assets/corsor/corsor.png').convert_alpha()
 corsor = pygame.transform.scale(corsor,(5*2,5*2))
@@ -53,8 +63,11 @@ while run:
     player.draw(screen)
     player.move(moving_L,moving_R,sneek)
 
-    enemy_group.update()
-    enemy_group.draw(screen)
+
+    for enemy in enemy_group:
+        enemy.controll(hitbox)
+        enemy.update()
+        enemy.draw(screen)
     
     grenade_group.update()
     grenade_group.draw(screen)
@@ -68,9 +81,10 @@ while run:
     
     if player.alive:
         if shoot:
-            player.shoot(player,enemy)
-        elif grenade:
-            player.grenade(player,enemy)
+            player.shoot(player)
+        if grenade:
+            player.grenade(player)
+        
         if sneek:
             player.update_action(3)# 3 = sneek
         elif player.in_air == True:

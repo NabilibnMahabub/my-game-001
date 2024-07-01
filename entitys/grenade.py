@@ -7,12 +7,10 @@ from entitys.player import *
 
 BLACK = (0,0,0)
 
-enemy_group = pygame.sprite.Group()
-grenade_group =pygame.sprite.Group()
-explosion_group = pygame.sprite.Group()
+
 
 class Grenade(pygame.sprite.Sprite):
-    def __init__(self,x,y,direction,player,enemy):
+    def __init__(self,x,y,direction,player):
         pygame.sprite.Sprite.__init__(self)
         self.timer = 100
         self.range_ = 64
@@ -21,7 +19,6 @@ class Grenade(pygame.sprite.Sprite):
         self.frame_index = 0
         self.flip = False
         self.player = player
-        self.enemy = enemy
         self.animation = [ ]
         self.update_time = pygame.time.get_ticks()
 
@@ -66,7 +63,7 @@ class Grenade(pygame.sprite.Sprite):
         self.timer -= 1
         if self.timer <= 0:
             self.kill()
-            explosion = Explosion(self.rect.x,self.rect.y,3,self.range_,self.player,self.enemy)
+            explosion = Explosion(self.rect.x,self.rect.y,3,self.range_,self.player)
             explosion_group.add(explosion)
         
     def update_animation(self):
@@ -88,12 +85,11 @@ class Grenade(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
 class Explosion(pygame.sprite.Sprite):
-    def __init__(self,x,y,scale,range_,player,enemy):
+    def __init__(self,x,y,scale,range_,player):
         pygame.sprite.Sprite.__init__(self)
         self.frame_index = 0
         self.scale = scale
         self.player = player
-        self.enemy = enemy
         self.range_ = range_
         self.animation = [ ]
         self.update_time = pygame.time.get_ticks()
@@ -114,6 +110,8 @@ class Explosion(pygame.sprite.Sprite):
         self.update_animation()
         if abs(self.rect.centerx - self.player.rect.centerx) <  TILE_SIZE *3 and abs(self.rect.centery - self.player.rect.centery) <  TILE_SIZE *3:
             self.player.health -= 50
+
+        
         for enemy in enemy_group:
             if abs(self.rect.centerx - enemy.rect.centerx) <  TILE_SIZE *3 and abs(self.rect.centery - enemy.rect.centery) <  TILE_SIZE *3:
                 enemy.health -= 50
