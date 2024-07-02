@@ -89,6 +89,7 @@ class Explosion(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.frame_index = 0
         self.scale = scale
+        self.time = 50
         self.player = player
         self.range_ = range_
         self.animation = [ ]
@@ -108,13 +109,19 @@ class Explosion(pygame.sprite.Sprite):
 
     def update(self):
         self.update_animation()
+        self.time -= 1
         if abs(self.rect.centerx - self.player.rect.centerx) <  TILE_SIZE *3 and abs(self.rect.centery - self.player.rect.centery) <  TILE_SIZE *3:
-            self.player.health -= 50
+            if self.time <= 0:
+                    pass
+            else:
+                self.player.health -= 50
 
-        
         for enemy in enemy_group:
             if abs(self.rect.centerx - enemy.rect.centerx) <  TILE_SIZE *3 and abs(self.rect.centery - enemy.rect.centery) <  TILE_SIZE *3:
-                enemy.health -= 50
+                if self.time <= 0:
+                    pass
+                else:
+                    enemy.health -= 50
             else:
                 pass
         

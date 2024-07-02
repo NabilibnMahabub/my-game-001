@@ -17,3 +17,5 @@ enemy_group = pygame.sprite.Group()
 grenade_group =pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
+itembox_group = pygame.sprite.Group()
+

@@ -9,6 +9,8 @@ from defs.screen_obj import *
 from entitys.player import *
 from entitys.bullet import *
 from entitys.grenade import *
+from entitys.itembox import *
+
 
 
 
@@ -32,11 +34,21 @@ enemy2 = Player('black',600,300,2,5,11,600,0)
 enemy3 = Player('yellow',400,300,2,5,11,600,0)
 enemy4 = Player('green',200,300,2,5,11,600,0)
 
+health_box = Itembox('health_box',500,350,player)
+ammo_box = Itembox('ammo_box',600,350,player)
+grenade_box = Itembox('grenade_box',700,350,player)
+
+
 
 enemy_group.add(enemy)
 enemy_group.add(enemy2)
 enemy_group.add(enemy3)
 enemy_group.add(enemy4)
+
+itembox_group.add(health_box)
+itembox_group.add(ammo_box)
+itembox_group.add(grenade_box)
+
 
 
 
@@ -45,6 +57,8 @@ corsor = pygame.transform.scale(corsor,(5*2,5*2))
 
 health_bar = Healthbar(5,5,100,10,100)
 ammo_bar = AmmoBar(5,20, 16.8,10,100)
+grenade_bar = GrenadeBar(5,35,1000,10,100)
+
 
 
 #runner
@@ -57,6 +71,8 @@ while run:
 
     ammo_bar.draw(screen,player.ammo)
     health_bar.draw(screen,player.health)
+    grenade_bar.draw(screen,player.grenades)
+
 
     player.controll(hitbox)
     player.update()
@@ -75,9 +91,11 @@ while run:
     explosion_group.update()
     explosion_group.draw(screen)
 
-    #bullet group
     bullet_group.update()
     bullet_group.draw(screen)
+
+    itembox_group.update()
+    itembox_group.draw(screen)
     
     if player.alive:
         if shoot:

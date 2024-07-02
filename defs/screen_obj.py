@@ -3,6 +3,7 @@ import pygame
 RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
+COL =(50,50,50)
 
 class Healthbar():
     def __init__(self,x,y,width,hight,max_hp):
@@ -32,3 +33,17 @@ class AmmoBar():
         self.ammo_ = ammo
         retio =  (self.ammo_/self.max_ammo)
         pygame.draw.rect(screen, BLUE,(self.x,self.y,self.width*retio,self.hight))
+
+class GrenadeBar():
+    def __init__(self,x,y,width,hight,max_grenade):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.hight = hight
+        self.grenade = max_grenade
+        self.max_grenade = self.grenade
+
+    def draw(self,screen,grenade):
+        self.grenade_ = grenade
+        retio =  (self.grenade_/self.max_grenade)
+        pygame.draw.rect(screen, COL,(self.x,self.y,self.width*retio,self.hight))
