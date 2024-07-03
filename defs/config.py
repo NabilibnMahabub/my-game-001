@@ -1,8 +1,8 @@
 import pygame
 
 #screeen rez
-screen_w = 900
-screen_h = 600
+screen_w = 1300
+screen_h = 800
 
 TILE_SIZE = 32
 

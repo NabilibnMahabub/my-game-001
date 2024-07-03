@@ -29,10 +29,10 @@ hitbox = False
 
 
 player = Player('blue',300,300,2,5,11,600,10)
-enemy = Player('red',500,300,2,5,11,600,0)
-enemy2 = Player('black',600,300,2,5,11,600,0)
-enemy3 = Player('yellow',400,300,2,5,11,600,0)
-enemy4 = Player('green',200,300,2,5,11,600,0)
+enemy = Player('red',500,300,2,2,11,600,0)
+enemy2 = Player('black',600,300,2,2,11,600,0)
+enemy3 = Player('yellow',400,300,2,2,11,600,0)
+enemy4 = Player('green',200,300,2,2,11,600,0)
 
 health_box = Itembox('health_box',500,350,player)
 ammo_box = Itembox('ammo_box',600,350,player)
@@ -77,10 +77,11 @@ while run:
     player.controll(hitbox)
     player.update()
     player.draw(screen)
-    player.move(moving_L,moving_R,sneek)
+    player.move(moving_L,moving_R)
 
 
     for enemy in enemy_group:
+        enemy.ai(player)
         enemy.controll(hitbox)
         enemy.update()
         enemy.draw(screen)

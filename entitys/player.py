@@ -42,6 +42,8 @@ class Player(pygame.sprite.Sprite):
         self.frame_index = 0
         self.action = 0
         self.update_time = pygame.time.get_ticks()
+        #ai vals
+        self.move_counter = 0
 
         self.animation_types = ['idle','run','jump','crouch','death']
         for animation in self.animation_types:
@@ -92,7 +94,7 @@ class Player(pygame.sprite.Sprite):
             self.grenades -= 1
 
 
-    def move(self , moving_L,moving_R,sneek):
+    def move(self , moving_L,moving_R):
         #delta x and y velue
         dx = 0
         dy = 0
@@ -126,6 +128,7 @@ class Player(pygame.sprite.Sprite):
         #update rect
         self.rect.x += dx
         self.rect.y += dy
+        
     def controll(self , hitbox):
         if hitbox:
             self.hitbox_=True
@@ -173,6 +176,21 @@ class Player(pygame.sprite.Sprite):
             pygame.draw.rect(screen,WHITE,self.hitbox,2)
             pygame.draw.rect(screen,WHITE,self.rect,2)
 
+    def ai(self,player):
+        if self.alive and player.alive:
+            if self.direction == 1:
+                ai_move_R = True
+            else:
+                ai_move_R = False
+
+            ai_move_L = not ai_move_R
+            self.move(ai_move_L,ai_move_R)
+            self.update_action(1)
+            self.move_counter += 1
+
+            if self.move_counter > TILE_SIZE:
+                self.direction *= -1
+                self.move_counter *= -1
         
 
 
