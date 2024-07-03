@@ -17,7 +17,7 @@ class Itembox(pygame.sprite.Sprite):
         sheet = spritesheet(img)
 
         for i in range(2):
-            image = sheet.get_image(i,32,32,2,BLACK)
+            image = sheet.get_image(i,32,32,1,BLACK)
             self.animation.append(image)
         
         self.image = self.animation[self.frame_index]
