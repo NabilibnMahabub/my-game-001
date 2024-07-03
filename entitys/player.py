@@ -1,6 +1,8 @@
 #importing libreraris
 import pygame
 import os
+import random
+
 from defs.config import *
 from defs.spritesheet import *
 from entitys.bullet import *
@@ -44,6 +46,8 @@ class Player(pygame.sprite.Sprite):
         self.update_time = pygame.time.get_ticks()
         #ai vals
         self.move_counter = 0
+        self.idleing = False
+        self.idle_counter = 0
 
         self.animation_types = ['idle','run','jump','crouch','death']
         for animation in self.animation_types:
@@ -178,19 +182,30 @@ class Player(pygame.sprite.Sprite):
 
     def ai(self,player):
         if self.alive and player.alive:
-            if self.direction == 1:
-                ai_move_R = True
+            if random.randint(1, 200) == 1:
+                self.idleing = True
+                self.idle_counter = 50
+
+
+            if self.idleing == False:
+                if self.direction == 1:
+                    ai_move_R = True
+                else:
+                    ai_move_R = False
+
+                ai_move_L = not ai_move_R
+                self.move(ai_move_L,ai_move_R)
+                self.update_action(1)
+                self.move_counter += 1
+
+                if self.move_counter > TILE_SIZE:
+                    self.direction *= -1
+                    self.move_counter *= -1
             else:
-                ai_move_R = False
-
-            ai_move_L = not ai_move_R
-            self.move(ai_move_L,ai_move_R)
-            self.update_action(1)
-            self.move_counter += 1
-
-            if self.move_counter > TILE_SIZE:
-                self.direction *= -1
-                self.move_counter *= -1
+                self.idle_counter -= 1
+                self.update_action(0)
+                if self.idle_counter == 0:
+                    self.idleing = False
         
 
 
