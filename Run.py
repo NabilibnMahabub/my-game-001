@@ -29,10 +29,10 @@ hitbox = False
 
 
 player = Player('blue',300,300,2,5,11,600,10)
-enemy = Player('red',500,300,2,2,11,600,0)
-enemy2 = Player('black',600,300,2,2,11,600,0)
-enemy3 = Player('yellow',400,300,2,2,11,600,0)
-enemy4 = Player('green',200,300,2,2,11,600,0)
+enemy = Player('red',600,300,2,2,11,600,0)
+enemy2 = Player('black',800,300,2,2,11,600,0)
+enemy3 = Player('yellow',900,300,2,2,11,600,0)
+enemy4 = Player('green',700,300,2,2,11,600,0)
 
 health_box = Itembox('health_box',500,350,player)
 ammo_box = Itembox('ammo_box',600,350,player)

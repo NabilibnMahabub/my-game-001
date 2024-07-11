@@ -8,7 +8,7 @@ from defs.spritesheet import *
 from entitys.bullet import *
 from entitys.grenade import *
 
-BG = (144,201,120)
+BG = (100,200,255)
 RED = (255 ,0,0)
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -48,6 +48,7 @@ class Player(pygame.sprite.Sprite):
         self.move_counter = 0
         self.idleing = False
         self.idle_counter = 0
+        self.vision = pygame.Rect(0,0,200,4)
 
         self.animation_types = ['idle','run','jump','crouch','death']
         for animation in self.animation_types:
@@ -169,6 +170,37 @@ class Player(pygame.sprite.Sprite):
             if self.health ==0:
                 self.kill()
 
+    def ai(self,player):
+        if self.alive and player.alive:
+            if random.randint(1, 200) == 1:
+                self.idleing = True
+                self.idle_counter = 50
+    
+            if self.vision.colliderect(player.rect):
+                self.update_action(0)
+                self.shoot(player)
+            else:
+                if self.idleing == False:
+                    if self.direction == 1:
+                        ai_move_R = True
+                    else:
+                        ai_move_R = False
+
+                    ai_move_L = not ai_move_R
+                    self.move(ai_move_L,ai_move_R)
+                    self.update_action(1)
+                    self.move_counter += 1
+
+                    self.vision.center = (self.rect.centerx+ 100*self.direction,self.rect.centery)
+
+                    if self.move_counter > TILE_SIZE:
+                        self.direction *= -1
+                        self.move_counter *= -1
+                else:
+                    self.idle_counter -= 1
+                    self.update_action(0)
+                    if self.idle_counter == 0:
+                        self.idleing = False
 
     def draw(self,screen):
         flipped_image = pygame.transform.flip(self.image, self.flip ,False)
@@ -179,33 +211,9 @@ class Player(pygame.sprite.Sprite):
         if self.hitbox_:
             pygame.draw.rect(screen,WHITE,self.hitbox,2)
             pygame.draw.rect(screen,WHITE,self.rect,2)
-
-    def ai(self,player):
-        if self.alive and player.alive:
-            if random.randint(1, 200) == 1:
-                self.idleing = True
-                self.idle_counter = 50
+            pygame.draw.rect(screen,WHITE,self.vision,2)
 
 
-            if self.idleing == False:
-                if self.direction == 1:
-                    ai_move_R = True
-                else:
-                    ai_move_R = False
-
-                ai_move_L = not ai_move_R
-                self.move(ai_move_L,ai_move_R)
-                self.update_action(1)
-                self.move_counter += 1
-
-                if self.move_counter > TILE_SIZE:
-                    self.direction *= -1
-                    self.move_counter *= -1
-            else:
-                self.idle_counter -= 1
-                self.update_action(0)
-                if self.idle_counter == 0:
-                    self.idleing = False
         
 
 
