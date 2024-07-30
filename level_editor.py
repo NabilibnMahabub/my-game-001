@@ -17,9 +17,14 @@ from defs.spritesheet import *
 side_margin = 300
 lower_margin = 100
 
+ROWS = 25
+COLLAMS = 43
+GRAY = (17,17,17)
+
 scrol_r = False
 scrol_l = False
 scroll = 0
+scroll_speed = 1
 
 
 screen = pygame.display.set_mode((screen_w+side_margin ,screen_h+lower_margin))
@@ -64,6 +69,9 @@ enemy_2.get_image(0,28,34,1.5,BLACK)
 enemy_3.get_image(0,28,34,1.5,BLACK)
 
 rect = pygame.Rect(0,0,screen_w,screen_h)
+invbg = pygame.Rect(screen_w,0,side_margin,screen_h)
+invbg_2 = pygame.Rect(0,screen_h,screen_w+side_margin,lower_margin)
+
 
 
 def draw_bg(screen):
@@ -78,20 +86,35 @@ def draw_bg(screen):
     pygame.draw.rect(screen,WHITE,rect,1)
 
 
+def draw_grid(screen):
+    #making drids
+    for j in range((COLLAMS*5)+1):
+        pygame.draw.line(screen,WHITE,(j* TILE_SIZE - scroll ,0),(j*TILE_SIZE - scroll,screen_h))
+
+    for j in range(ROWS+1):
+        pygame.draw.line(screen,WHITE,( 0,j* TILE_SIZE),(screen_w,j*TILE_SIZE))
+    
+    pygame.draw.rect(screen,GRAY,invbg)
+    pygame.draw.rect(screen,GRAY,invbg_2)
+
+
 #runner
 run = True
 while run:
-
     draw_bg(screen)
+    draw_grid(screen)
 
     if scrol_l == True and scroll > 0:
-        scroll -= 5
+        scroll -= 5 *scroll_speed
     elif scroll == False:
         scroll = scroll
     if scrol_r == True:
-        scroll += 5
+        scroll += 5 *scroll_speed
     elif scroll == False:
         scroll = scroll
+
+    if scrol_l == False and scrol_r == False:
+        scroll = (scroll//32)*32
     
     for event in pygame.event.get():
         #quit game
@@ -100,18 +123,21 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
                 scrol_r = True
-            elif event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT:
                 scrol_l = True
+            if event.key == pygame.K_LSHIFT:
+                scroll_speed = 5
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:
                 scrol_r = False
-            elif event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT:
                 scrol_l = False
+            if event.key == pygame.K_LSHIFT:
+                scroll_speed = 1
 
     
     pygame.display.update()
 
 
 pygame.quit()
-#huauduiaufouafbobaf
